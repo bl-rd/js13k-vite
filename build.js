@@ -5,33 +5,14 @@ const rollup = require('./rollup');
 const uglifyJs = require('uglify-js');
 const minify = require('html-minifier').minify;
 
-/**
- * @todo Modularize all the functions
- * @todo Find package that does promise based fs stuff?
- */
-
-/*
-# steps
-
-## javascript
-
-- rollup
-- uglify
-
-## html
-
-- minify
-
-## css
-
-- postcss
-- minify
-
-*/
 zip();
 
 async function compileHtml() {
-    //
+    const options = {
+        collapseWhitespace: true
+    };
+    let html = await fs.readFile('index.html');
+    return minify(html.toString(), options);
 }
 
 async function compileJs() {
@@ -58,6 +39,7 @@ async function compileJs() {
 async function zip(name = 'dist') {
 
     const dest = `${name}.zip`;
+
     // delete any existing builds
     await fs.remove(dest);
 
@@ -65,12 +47,11 @@ async function zip(name = 'dist') {
 
     console.log(chalk.cyan('=> zipping files...'));
 
-    let html = await fs.readFile('dist/index.html');
-    let js = await compileJs(); //fs.readFile('dist/bundle.js');
+    let html = await compileHtml();
+    let js = await compileJs();
 
     zip.addFile('index.html', new Buffer(html));
     zip.addFile('bundle.js', new Buffer(js));
-    // let willSendThis = zip.toBuffer();
     zip.writeZip(dest);
 
     const stats = fs.statSync(dest);
