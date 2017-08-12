@@ -1,5 +1,6 @@
 const resolve = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
+const commonjs = require('rollup-plugin-commonjs');
 const rollup = require('rollup');
 
 let inputOptions = {
@@ -7,6 +8,7 @@ let inputOptions = {
     format: 'cjs',
     plugins: [
         resolve(),
+        commonjs(),
         babel({exclude: 'node_modules/**'})
     ],
     dest: 'dist/bundle.js'
