@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"rollup -c -w \" \"hs -o -c-1\"",
-    "build": "rollup -c",
+    "start": "npm run frames && concurrently \"rollup -c -w \" \"hs -o -c-1\"",
+    "build": "npm run frames && rollup -c",
     "html": "html-minifier index.html -o dist/index.html --collapse-whitespace",
-    "zip": "node build.js"
+    "zip": "node build.js",
+    "frames": "node get-svg.js svg"
   },
   "keywords": [],
   "author": "",
@@ -18,10 +19,12 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-latest": "^6.24.1",
     "chalk": "^2.0.1",
+    "cheerio": "^1.0.0-rc.2",
     "concurrently": "^3.5.0",
-    "fs-extra": "^4.0.0",
+    "fs-extra": "^4.0.1",
     "html-minifier": "^3.5.2",
     "http-server": "^0.10.0",
+    "phantom": "^4.0.5",
     "rollup": "^0.45.2",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.1.0",
