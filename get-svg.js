@@ -60,17 +60,19 @@ async function getData(content) {
         
         // Extract the animation cycles
         for (let [key, value] of animations) {
-            $(`#${key} .cycle`).each((index, element) => {
+            $(`#${key} .cycle`).each((cycleIndex, element) => {
                 let id = element.attribs.id;
                 animations.get(key)[id] = [];
-                $(`#${key} #${id} svg`).each((index, element) => {
+                $(`#${key} #${id} svg`).each((svgIndex, element) => {
+                    let things = [];
                     element.children.forEach(child => {
                         if (child.name === 'polygon') {
                             let points = child.attribs.points;
-                            // push all these like below ****
-                            animations.get(key)[id].push(makePointsArray(points));
+                            things.push(makePointsArray(points));
                         }
                     });
+                    animations.get(key)[id].push(things);
+
                 });
             });
 
