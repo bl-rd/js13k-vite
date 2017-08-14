@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const AdmZip = require('adm-zip');
 const chalk = require('chalk');
 const rollup = require('./rollup');
-const uglifyJs = require('uglify-js');
+const uglifyJs = require('uglify-es');
 const minify = require('html-minifier').minify;
 
 zip();
@@ -38,30 +38,34 @@ async function compileJs() {
 
 async function zip(name = 'dist') {
 
-    const dest = `${name}.zip`;
+    try {
+        const dest = `${name}.zip`;
 
-    // delete any existing builds
-    await fs.remove(dest);
+        // delete any existing builds
+        await fs.remove(dest);
 
-    let zip = new AdmZip();
+        let zip = new AdmZip();
 
-    console.log(chalk.cyan('=> zipping files...'));
+        console.log(chalk.cyan('=> zipping files...'));
 
-    let html = await compileHtml();
-    let js = await compileJs();
+        let html = await compileHtml();
+        let js = await compileJs();
 
-    zip.addFile('index.html', new Buffer(html));
-    zip.addFile('bundle.js', new Buffer(js));
-    zip.writeZip(dest);
+        zip.addFile('index.html', new Buffer(html));
+        zip.addFile('bundle.js', new Buffer(js));
+        zip.writeZip(dest);
 
-    const stats = fs.statSync(dest);
-    const fileSizeInBytes = stats.size;
-    const MAX_SIZE = 13000;
+        const stats = fs.statSync(dest);
+        const fileSizeInBytes = stats.size;
+        const MAX_SIZE = 13000;
 
-    if (fileSizeInBytes <= MAX_SIZE) {
-        console.log(`size: ${chalk.green(fileSizeInBytes + 'k')} (yay!)\n`);
-    }
-    else {
-        console.log(`size: ${chalk.red(fileSizeInBytes + 'k')} (uh-oh...)\n`);
+        if (fileSizeInBytes <= MAX_SIZE) {
+            console.log(`size: ${chalk.green(fileSizeInBytes + 'k')} (yay!)\n`);
+        }
+        else {
+            console.log(`size: ${chalk.red(fileSizeInBytes + 'k')} (uh-oh...)\n`);
+        }
+    } catch(e) {
+        console.log(e);
     }
 }
